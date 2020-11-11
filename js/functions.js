@@ -246,7 +246,7 @@ async function LoopInfo() {
 
 async function FetchBroadcastId() {
     console.log("Fetching Broadcast....");
-var proxyUrl = 'https://younow-cors-header.herokuapp.com/?q=',
+    var proxyUrl = 'https://younow-cors-header.herokuapp.com/?q=',
         targetUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user=' + document.getElementById("ipName").value;
     var json = fetch(proxyUrl + targetUrl)
         .then(blob => blob.json())
@@ -284,57 +284,51 @@ var proxyUrl = 'https://younow-cors-header.herokuapp.com/?q=',
 function transferComplete(evt) {
     console.log("The transfer is complete.");
 }
+
 function UpdateInfo() {
-    var targetUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user=' + document.getElementById("ipName").value;
+    console.log("Fetching Broadcast....");
+    var proxyUrl = 'https://younow-cors-header.herokuapp.com/?q=',
+        targetUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user=' + document.getElementById("ipName").value;
+    var json = fetch(proxyUrl + targetUrl)
+        .then(blob => blob.json())
+        .then(data => {
+            json = JSON.stringify(data, null, 2);
+            var done = JSON.parse(json);
+
+            console.log(done);
+            console.log(done.errorCode);
+            if (done.errorCode == 0) {
+                document.getElementById("t1").innerHTML = "Stream Number: " + done.broadcastsCount;
+                document.getElementById("t2").innerHTML = "Total Guests: " + done.guestListCount;
+                document.getElementById("t3").innerHTML = "Moment Views: " + done.momentViews;
+                document.getElementById("t4").innerHTML = "New Fans: " + done.fans;
 
 
-    console.log("Updating Info");
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.addEventListener("load", transferComplete);
-        var proxyUrl = 'https://younow-cors-header.herokuapp.com/?q=';
-    var url = proxyUrl + targetUrl;
+                if (firstrun) {
+                    console.log(done.display_viewers);
+                    console.log("TESTTEST");
+                    startviews = parseInt(done.display_viewers, 10);
+                    firstrun = false;
+                    document.getElementById("t5").innerHTML = "Avg Views: " + startviews;
+                } else {
+                    startviews = (parseInt(startviews, 10) + parseInt(done.display_viewers, 10)) / 2;
+                    document.getElementById("t5").innerHTML = "Avg Views: " + startviews;
+                }
 
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            var done = JSON.parse(this.responseText);
-        }
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-    xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    console.log(done);
-
-        if (done.errorCode == 0) {
-            document.getElementById("t1").innerHTML = "Stream Number: " + done.broadcastsCount;
-            document.getElementById("t2").innerHTML = "Total Guests: " + done.guestListCount;
-            document.getElementById("t3").innerHTML = "Moment Views: " + done.momentViews;
-            document.getElementById("t4").innerHTML = "New Fans: " + done.fans;
-
-
-            if (firstrun) {
-                console.log(done.display_viewers);
-                console.log("TESTTEST");
-                startviews = parseInt(done.display_viewers, 10);
-                firstrun = false;
-                document.getElementById("t5").innerHTML = "Avg Views: " + startviews;
-            } else {
-                startviews = (parseInt(startviews, 10) + parseInt(done.display_viewers, 10)) / 2;
-                document.getElementById("t5").innerHTML = "Avg Views: " + startviews;
             }
 
-        }
+            document.getElementById("t6").innerHTML = "Silented Users:  <br> <br>";
 
-        document.getElementById("t6").innerHTML = "Silented Users:  <br> <br>";
-
-        var listOfSilentedusers = [];
-        console.log(done);
-        listOfSilentedusers = done.silentFromChatUsers.match(/[0-9]+/g);
-        console.log(listOfSilentedusers[0]);
-        console.log(listOfSilentedusers);
-        listOfSilentedusers.forEach(addToSilentedUsers);
+            var listOfSilentedusers = [];
+            listOfSilentedusers = done.silentFromChatUsers.match(/[0-9]+/g);
+            console.log(listOfSilentedusers[0]);
+            console.log(listOfSilentedusers);
+            listOfSilentedusers.forEach(addToSilentedUsers);
 
 
-    }
+        })
+        .catch(e => {
+        });
 }
 
 
