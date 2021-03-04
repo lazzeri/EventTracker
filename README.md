@@ -12,7 +12,7 @@
 # How to use: 
 <h2>Here is a link to the Tutorial :)</h2>
 
-<h2>https://bit.ly/3a71iCZ</h2>
+<h2>https://www.youtube.com/watch?v=6BinL2OXTig&t=28s</h2>
 
 # Questions: 
 <h2>Ukuluca on Instagram</h2>
